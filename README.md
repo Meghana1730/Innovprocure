@@ -8,6 +8,8 @@ Smart India Hackathon 2026 · Problem statement **SIH26136** · Government of Ma
 >
 > This is a prototype. Every department, startup, person, amount and result in it is made-up demo data. Nothing here is a real tender, a real payment or an official statistic.
 
+![Government dashboard](docs/screenshots/government.png)
+
 ## The problem
 
 > "Startup friendly public procurement mechanism that enables government departments to identify, pilot, procure, and scale innovative solutions from eligible startups."
@@ -52,6 +54,10 @@ flowchart LR
 | **Government** (`/government`) | Department officers, innovation cell, finance | Programme numbers, every challenge and its next step, the full pathway workspace for a selected challenge, the payment queue, and the template library with the rules in force. Each action shows which officer takes it. |
 | **Startup** (`/startup`)       | One startup                                   | Open calls with a match score, apply, see why an application passed or failed each eligibility rule, deliver milestones, track payments against the payment target.                                                       |
 | **Experts** (`/experts`)       | Evaluators and independent validators         | Score applications against the rubric; submit the validation report for a closed pilot.                                                                                                                                   |
+
+| Startup dashboard | Expert dashboard |
+|---|---|
+| ![Startup dashboard](docs/screenshots/startup.png) | ![Expert dashboard](docs/screenshots/experts.png) |
 
 ## How it meets the expected outcomes
 
