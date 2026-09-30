@@ -14,7 +14,6 @@ export type Account = {
   password: string
   /** Who the presenter is when signed in. */
   name: string
-  organisation: string
   /** What this account can do, in one line. */
   can: string
   home: string
@@ -26,7 +25,6 @@ export const DEMO_ACCOUNTS: Account[] = [
     email: 'officer@innovprocure.demo',
     password: 'Govt@2026',
     name: 'Demo Government Officer',
-    organisation: 'Department, innovation cell and finance',
     can: 'Publish challenges, screen and select startups, run pilots, pay milestones, decide on scale-up.',
     home: '/government',
   },
@@ -35,7 +33,6 @@ export const DEMO_ACCOUNTS: Account[] = [
     email: 'startup@innovprocure.demo',
     password: 'Startup@2026',
     name: 'Demo Startup Founder',
-    organisation: 'A recognised startup',
     can: 'See open calls, apply, deliver milestones and track payments.',
     home: '/startup',
   },
@@ -44,7 +41,6 @@ export const DEMO_ACCOUNTS: Account[] = [
     email: 'expert@innovprocure.demo',
     password: 'Expert@2026',
     name: 'Demo Independent Expert',
-    organisation: 'Evaluators and validators',
     can: 'Score applications against the rubric and validate pilot results.',
     home: '/experts',
   },

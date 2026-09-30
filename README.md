@@ -96,6 +96,8 @@ Other commands:
 
 ## Demo accounts
 
+![Sign-in page](docs/screenshots/sign-in.png)
+
 Each account opens its own dashboard. The same accounts work on the live demo.
 
 | Dashboard  | Email                       | Password       |

@@ -3,7 +3,7 @@
 
 import { useSyncExternalStore } from 'react'
 
-import { DEMO_ACCOUNTS, type Account } from '@/lib/auth/accounts'
+import { accountFor, DEMO_ACCOUNTS, type Account } from '@/lib/auth/accounts'
 import type { Dashboard } from '@/lib/demo/selectors'
 
 const STORAGE_KEY = 'innovprocure.session.v1'
@@ -33,6 +33,14 @@ function commit(account: Account | null) {
   listeners.forEach((listener) => listener())
 }
 
+// Another tab signed in, switched account or signed out: follow it, so two tabs never
+// disagree about who is signed in. One browser holds one account at a time.
+window.addEventListener('storage', (event) => {
+  if (event.key !== STORAGE_KEY && event.key !== null) return
+  current = load()
+  listeners.forEach((listener) => listener())
+})
+
 function subscribe(listener: () => void) {
   listeners.add(listener)
   return () => listeners.delete(listener)
@@ -45,8 +53,9 @@ export function useSession(): Account | null {
 
 /** Signs in with an email and password. Throws an Error with a plain message when wrong. */
 export function signIn(email: string, password: string): Account {
+  // Spaces around a pasted email or password are ignored.
   const account = DEMO_ACCOUNTS.find(
-    (a) => a.email === email.trim().toLowerCase() && a.password === password,
+    (a) => a.email === email.trim().toLowerCase() && a.password === password.trim(),
   )
   if (!account) throw new Error('The email or password is not correct.')
   commit(account)
@@ -54,10 +63,8 @@ export function signIn(email: string, password: string): Account {
 }
 
 /** Demo shortcut: switch to the account of another dashboard without typing its password. */
-export function switchAccount(dashboard: Dashboard): Account {
-  const account = DEMO_ACCOUNTS.find((a) => a.dashboard === dashboard) ?? DEMO_ACCOUNTS[0]
-  commit(account)
-  return account
+export function switchAccount(dashboard: Dashboard) {
+  commit(accountFor(dashboard))
 }
 
 export function signOut() {

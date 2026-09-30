@@ -38,8 +38,8 @@ export function RouteError() {
             <RefreshCw aria-hidden /> Reload
           </Button>
           <Button variant="outline" asChild>
-            <Link to="/government" reloadDocument>
-              <House aria-hidden /> Go to the Government dashboard
+            <Link to="/" reloadDocument>
+              <House aria-hidden /> Go to my dashboard
             </Link>
           </Button>
         </div>

@@ -88,7 +88,7 @@ function AccountMenu() {
               onSelect={() => {
                 switchAccount(account.dashboard)
                 navigate(account.home)
-                toast.success(`Signed in as ${account.name}`)
+                toast.success(`Signed in as ${account.name}`, { id: 'account-switch' })
               }}
             >
               <ArrowLeftRight aria-hidden /> {DASHBOARD_NAMES[account.dashboard]}

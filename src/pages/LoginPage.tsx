@@ -1,6 +1,6 @@
 // Sign-in screen (shown without the app shell). One demo account per dashboard.
 import { ArrowRight, ClipboardCheck, FlaskConical, Landmark, Rocket } from 'lucide-react'
-import { useState, type FormEvent } from 'react'
+import { useRef, useState, type FormEvent } from 'react'
 import { Navigate, useLocation, useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
@@ -35,6 +35,7 @@ export default function LoginPage() {
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState<string | null>(null)
+  const submitRef = useRef<HTMLButtonElement>(null)
 
   if (session) return <Navigate to={destination(session, from)} replace />
 
@@ -50,7 +51,7 @@ export default function LoginPage() {
 
   function onSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault()
-    if (!email.trim() || !password) {
+    if (!email.trim() || !password.trim()) {
       setError('Enter the email and the password.')
       return
     }
@@ -59,13 +60,13 @@ export default function LoginPage() {
 
   return (
     <div className="grid min-h-screen grid-cols-1 bg-background lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)]">
-      <aside className="flex min-w-0 flex-col justify-between gap-8 bg-sidebar px-6 py-8 text-sidebar-foreground sm:px-10 lg:px-12 lg:py-12">
+      <aside className="flex min-w-0 flex-col justify-between gap-5 bg-sidebar px-6 py-6 text-sidebar-foreground sm:gap-8 sm:px-10 sm:py-8 lg:px-12 lg:py-12">
         <Logo />
         <div className="max-w-xl space-y-5">
           <p className="text-xs font-semibold tracking-wider text-sidebar-foreground/70 uppercase">
             Startup-friendly public procurement
           </p>
-          <h1 className="text-3xl leading-tight font-semibold tracking-tight text-sidebar-primary xl:text-4xl">
+          <h1 className="text-2xl leading-tight font-semibold tracking-tight text-sidebar-primary sm:text-3xl xl:text-4xl">
             One pathway from a department&apos;s problem to a tested, paid and scaled startup
             solution
           </h1>
@@ -90,8 +91,8 @@ export default function LoginPage() {
         </p>
       </aside>
 
-      <main className="flex min-w-0 items-center justify-center px-4 py-10 sm:px-8">
-        <div className="w-full max-w-md space-y-8">
+      <main className="flex min-w-0 items-center justify-center px-4 py-6 sm:px-8">
+        <div className="w-full max-w-md space-y-6">
           <div className="space-y-1.5">
             <h2 className="text-2xl font-semibold tracking-tight">Sign in</h2>
             <p className="text-sm text-muted-foreground">
@@ -139,7 +140,7 @@ export default function LoginPage() {
                 {error}
               </p>
             )}
-            <Button type="submit" className="w-full">
+            <Button ref={submitRef} type="submit" className="w-full">
               Sign in <ArrowRight aria-hidden />
             </Button>
           </form>
@@ -154,13 +155,13 @@ export default function LoginPage() {
                 type a real password here.
               </p>
             </div>
-            <ul className="space-y-3">
+            <ul className="space-y-2">
               {DEMO_ACCOUNTS.map((account) => {
                 const Icon = ICONS[account.dashboard]
                 return (
                   <li
                     key={account.dashboard}
-                    className="min-w-0 rounded-xl border bg-card p-4 shadow-xs"
+                    className="min-w-0 rounded-xl border bg-card p-3 shadow-xs"
                   >
                     <div className="flex min-w-0 items-start gap-3">
                       <span className="grid size-9 shrink-0 place-items-center rounded-lg bg-accent text-primary">
@@ -193,6 +194,8 @@ export default function LoginPage() {
                           setEmail(account.email)
                           setPassword(account.password)
                           setError(null)
+                          // Brings the filled form back into view on a phone.
+                          submitRef.current?.focus()
                         }}
                       >
                         Fill the form

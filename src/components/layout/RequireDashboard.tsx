@@ -1,14 +1,23 @@
-// Shows a dashboard only to its own account. Any other account sees whose dashboard it is
-// and a one-click switch (a demo shortcut: in production the other person would sign in).
+// Shows a dashboard only to its own account.
+//
+// Demo shortcuts, because one presenter plays every side: a link inside the app that leads to
+// another side's dashboard switches to that account in the same click; an address typed or
+// reloaded shows whose dashboard it is and offers the switch. In production the other person
+// would sign in with their own account.
 import { ArrowLeftRight, Lock } from 'lucide-react'
-import type { ReactNode } from 'react'
-import { Link } from 'react-router-dom'
+import { useEffect, type ReactNode } from 'react'
+import { Link, NavigationType, useNavigationType } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { Button } from '@/components/ui/button'
 import { DASHBOARD_NAMES, accountFor } from '@/lib/auth/accounts'
 import { switchAccount, useSession } from '@/lib/auth/session'
 import type { Dashboard } from '@/lib/demo/selectors'
+
+/** After a switch the keyboard focus moves to the page content instead of being lost. */
+function focusMain() {
+  requestAnimationFrame(() => document.getElementById('main')?.focus())
+}
 
 export function RequireDashboard({
   dashboard,
@@ -18,8 +27,21 @@ export function RequireDashboard({
   children: ReactNode
 }) {
   const session = useSession()
-  if (!session || session.dashboard === dashboard) return <>{children}</>
+  const cameByLink = useNavigationType() === NavigationType.Push
   const owner = accountFor(dashboard)
+  const other = session !== null && session.dashboard !== dashboard
+  const follow = other && cameByLink
+
+  useEffect(() => {
+    if (!follow) return
+    switchAccount(dashboard)
+    // The id keeps it to one toast if the effect runs twice.
+    toast.success(`Signed in as ${owner.name}`, { id: 'account-switch' })
+    focusMain()
+  }, [follow, dashboard, owner.name])
+
+  if (!session || !other) return <>{children}</>
+  if (follow) return null
   return (
     <div className="mx-auto max-w-xl space-y-4 rounded-xl border bg-card p-6 text-center shadow-xs sm:p-8">
       <span className="mx-auto grid size-12 place-items-center rounded-full bg-accent text-primary">
@@ -38,7 +60,8 @@ export function RequireDashboard({
         <Button
           onClick={() => {
             switchAccount(dashboard)
-            toast.success(`Signed in as ${owner.name}`)
+            toast.success(`Signed in as ${owner.name}`, { id: 'account-switch' })
+            focusMain()
           }}
         >
           <ArrowLeftRight aria-hidden /> Switch to {owner.name}
