@@ -9,6 +9,7 @@ const OUT = process.argv[2] ?? 'test-results/smoke'
 mkdirSync(OUT, { recursive: true })
 
 const PAGES = [
+  ['login', '/login'],
   ['gov', '/government'],
   ['gov-brief', '/government?c=ch-006&tab=brief'],
   ['gov-startups-discover', '/government?c=ch-005&tab=startups'],
@@ -30,6 +31,13 @@ const browser = await chromium.launch()
 let problems = 0
 for (const width of WIDTHS) {
   const context = await browser.newContext({ viewport: { width, height: 900 } })
+  // Sign in as the account of the dashboard being opened.
+  await context.addInitScript(() => {
+    const dashboard = window.location.pathname.split('/')[1]
+    if (['government', 'startup', 'experts'].includes(dashboard)) {
+      window.localStorage.setItem('innovprocure.session.v1', JSON.stringify({ account: dashboard }))
+    }
+  })
   const page = await context.newPage()
   const errors = []
   page.on('console', (m) => m.type() === 'error' && errors.push(m.text()))

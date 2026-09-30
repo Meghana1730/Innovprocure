@@ -1,11 +1,22 @@
-import { Menu, RotateCcw } from 'lucide-react'
+import { ArrowLeftRight, LogOut, Menu, RotateCcw, UserRound } from 'lucide-react'
 import { useState } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { toast } from 'sonner'
 
 import { SidebarNav } from '@/components/layout/Sidebar'
 import { ConfirmDialog } from '@/components/overlays'
 import { Button } from '@/components/ui/button'
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from '@/components/ui/dropdown-menu'
 import { Sheet, SheetContent, SheetTitle } from '@/components/ui/sheet'
+import { DASHBOARD_NAMES, DEMO_ACCOUNTS } from '@/lib/auth/accounts'
+import { signOut, switchAccount, useSession } from '@/lib/auth/session'
 import { resetDemo } from '@/lib/demo/store'
 
 /** Puts the demo data back to its starting point. */
@@ -31,6 +42,70 @@ function ResetDemo() {
         }}
       />
     </>
+  )
+}
+
+/** Who is signed in, a one-click switch to the other demo accounts, and sign out. */
+function AccountMenu() {
+  const session = useSession()
+  const navigate = useNavigate()
+  if (!session) return null
+  return (
+    <DropdownMenu>
+      <DropdownMenuTrigger asChild>
+        <Button
+          variant="ghost"
+          size="sm"
+          className="max-w-56 shrink-0 gap-2 px-2"
+          aria-label={`Account: ${session.name}`}
+        >
+          <span className="grid size-7 shrink-0 place-items-center rounded-full bg-primary text-primary-foreground">
+            <UserRound className="size-4" aria-hidden />
+          </span>
+          <span className="hidden min-w-0 truncate md:inline">{session.name}</span>
+        </Button>
+      </DropdownMenuTrigger>
+      <DropdownMenuContent
+        align="end"
+        collisionPadding={8}
+        className="w-72 max-w-[calc(100vw-1rem)]"
+      >
+        <DropdownMenuLabel className="space-y-0.5">
+          <p className="truncate font-medium">{session.name}</p>
+          <p className="truncate text-xs font-normal text-muted-foreground">{session.email}</p>
+          <p className="truncate text-xs font-normal text-muted-foreground">
+            {DASHBOARD_NAMES[session.dashboard]}
+          </p>
+        </DropdownMenuLabel>
+        <DropdownMenuSeparator />
+        <DropdownMenuLabel className="text-xs font-medium text-muted-foreground">
+          Switch demo account
+        </DropdownMenuLabel>
+        {DEMO_ACCOUNTS.filter((account) => account.dashboard !== session.dashboard).map(
+          (account) => (
+            <DropdownMenuItem
+              key={account.dashboard}
+              onSelect={() => {
+                switchAccount(account.dashboard)
+                navigate(account.home)
+                toast.success(`Signed in as ${account.name}`)
+              }}
+            >
+              <ArrowLeftRight aria-hidden /> {DASHBOARD_NAMES[account.dashboard]}
+            </DropdownMenuItem>
+          ),
+        )}
+        <DropdownMenuSeparator />
+        <DropdownMenuItem
+          onSelect={() => {
+            signOut()
+            navigate('/login')
+          }}
+        >
+          <LogOut aria-hidden /> Sign out
+        </DropdownMenuItem>
+      </DropdownMenuContent>
+    </DropdownMenu>
   )
 }
 
@@ -62,6 +137,7 @@ export function TopBar({ title }: { title: string }) {
           {title}
         </p>
         <ResetDemo />
+        <AccountMenu />
       </div>
     </header>
   )

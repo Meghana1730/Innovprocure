@@ -1,6 +1,7 @@
 import { NavLink } from 'react-router-dom'
 
 import { MAIN_NAV, type NavItem } from '@/components/layout/nav'
+import { useSession } from '@/lib/auth/session'
 import { dashboardTasks, startupTasks } from '@/lib/demo/selectors'
 import { useDemoState } from '@/lib/demo/store'
 import { cn } from '@/lib/utils'
@@ -62,6 +63,7 @@ function Item({
 
 export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
   const state = useDemoState()
+  const session = useSession()
   const open = {
     government: dashboardTasks(state, 'government').length,
     startup: startupTasks(state).length,
@@ -73,7 +75,8 @@ export function SidebarNav({ onNavigate }: { onNavigate?: () => void }) {
         <Logo />
       </div>
       <nav aria-label="Dashboards" className="flex flex-1 flex-col gap-1 overflow-y-auto px-3">
-        {MAIN_NAV.map((item) => (
+        {/* Each account sees its own dashboard only. */}
+        {MAIN_NAV.filter((item) => item.dashboard === session?.dashboard).map((item) => (
           <Item key={item.to} item={item} onNavigate={onNavigate} badge={open[item.dashboard]} />
         ))}
       </nav>

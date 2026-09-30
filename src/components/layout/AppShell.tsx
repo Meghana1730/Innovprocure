@@ -1,9 +1,10 @@
 import { FlaskConical } from 'lucide-react'
-import { Outlet } from 'react-router-dom'
+import { Navigate, Outlet, useLocation } from 'react-router-dom'
 
 import { APP_NAME, useDocumentTitle, useRouteMeta } from '@/components/layout/route-meta'
 import { Sidebar } from '@/components/layout/Sidebar'
 import { TopBar } from '@/components/layout/TopBar'
+import { useSession } from '@/lib/auth/session'
 
 function DemoStrip() {
   return (
@@ -25,6 +26,11 @@ function DemoStrip() {
 export function AppShell() {
   const { title } = useRouteMeta()
   useDocumentTitle(title)
+  const session = useSession()
+  const location = useLocation()
+  if (!session) {
+    return <Navigate to="/login" replace state={{ from: location.pathname + location.search }} />
+  }
   return (
     <div className="min-h-screen bg-background">
       <a

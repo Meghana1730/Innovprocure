@@ -18,6 +18,14 @@ const problems = new WeakMap<Page, string[]>()
 
 test.beforeEach(async ({ page }) => {
   await page.clock.setFixedTime(DEMO_NOW)
+  // Each dashboard has its own account. Signing in through the form is covered by
+  // sign-in.spec.ts; here every page load is signed in as the account of the dashboard opened.
+  await page.addInitScript(() => {
+    const dashboard = window.location.pathname.split('/')[1]
+    if (['government', 'startup', 'experts'].includes(dashboard)) {
+      window.localStorage.setItem('innovprocure.session.v1', JSON.stringify({ account: dashboard }))
+    }
+  })
   const seen: string[] = []
   problems.set(page, seen)
   page.on('console', (message) => {

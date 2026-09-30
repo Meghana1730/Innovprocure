@@ -55,8 +55,8 @@ flowchart LR
 | **Startup** (`/startup`)       | One startup                                   | Open calls with a match score, apply, see why an application passed or failed each eligibility rule, deliver milestones, track payments against the payment target.                                                       |
 | **Experts** (`/experts`)       | Evaluators and independent validators         | Score applications against the rubric; submit the validation report for a closed pilot.                                                                                                                                   |
 
-| Startup dashboard | Expert dashboard |
-|---|---|
+| Startup dashboard                                  | Expert dashboard                                  |
+| -------------------------------------------------- | ------------------------------------------------- |
 | ![Startup dashboard](docs/screenshots/startup.png) | ![Expert dashboard](docs/screenshots/experts.png) |
 
 ## How it meets the expected outcomes
@@ -83,7 +83,7 @@ npm install
 npm run dev
 ```
 
-Open http://localhost:5173. There is no sign-in and no backend to start. Changes are saved in your browser; **Reset demo** (top right) puts the data back.
+Open http://localhost:5173 and sign in with one of the demo accounts below. There is no backend to start. Changes are saved in your browser; **Reset demo** (top right) puts the data back.
 
 Other commands:
 
@@ -94,16 +94,28 @@ Other commands:
 | `npm run lint`                                            | Lints the code                                     |
 | `npx playwright install chromium` then `npm run test:e2e` | Runs the browser test that walks the whole pathway |
 
+## Demo accounts
+
+Each account opens its own dashboard. The same accounts work on the live demo.
+
+| Dashboard  | Email                       | Password       |
+| ---------- | --------------------------- | -------------- |
+| Government | `officer@innovprocure.demo` | `Govt@2026`    |
+| Startup    | `startup@innovprocure.demo` | `Startup@2026` |
+| Experts    | `expert@innovprocure.demo`  | `Expert@2026`  |
+
+These are public demo credentials. The prototype has no server, so the sign-in only decides which dashboard you see; it is not real access control. To move between sides during a demo, use **Switch demo account** in the account menu (top right).
+
 ## A five-minute demo
 
-1. **Government dashboard.** Show the programme numbers and the list of steps waiting for officers.
+1. Sign in with the Government account. On the **Government dashboard**, show the programme numbers and the list of steps waiting for officers.
 2. Press **New challenge**, then **Fill with an example**, save, and publish it as an open call.
 3. Open **CH-2026-004** and run the eligibility screening. Show the reason recorded for every rule, and settle the one clarification.
-4. **Experts dashboard.** As Expert C, score the two remaining applications of CH-2026-003. Back on the Government dashboard, close the evaluation: a startup is selected.
+4. Switch to the Expert account (account menu, top right). On the **Experts dashboard**, as Expert C, score the two remaining applications of CH-2026-003. Switch back to the Government account and close the evaluation: a startup is selected.
 5. Approve the prefilled pilot plan and sign the milestone agreement.
 6. Open **CH-2026-002**, accept milestone 2, then approve and release its payment. Show the payment timing badge.
-7. **Startup dashboard** (acting as Example QueueCare Health): submit the next milestone and see the payment status.
-8. Open **CH-2026-001**, read the validation report and evidence summary, and record the scale-up decision with a procurement pathway.
+7. Switch to the Startup account. On the **Startup dashboard** (acting as Example QueueCare Health): submit the next milestone and see the payment status.
+8. Back on the Government account, open **CH-2026-001**, read the validation report and evidence summary, and record the scale-up decision with a procurement pathway.
 9. Show **Templates and rules** and the **Audit trail** tab.
 
 ## What is real and what is not
@@ -112,7 +124,7 @@ Other commands:
 | -------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
 | **Works in the prototype** | The whole pathway logic: brief quality check, startup matching, rule-by-rule screening, weighted scoring and ranking, pilot plan checks, milestone and payment flow, KPI tracking, validation, decision, audit trail. It runs in the browser. |
 | **Simulated**              | All data. Startups, departments, amounts and results are made up and marked as demo data.                                                                                                                                                     |
-| **Not built yet**          | A backend and database, sign-in and role-based access, document storage, e-signature, real payments, and live links to startup registries and the government e-marketplace. These are the planned next steps.                                 |
+| **Not built yet**          | A backend and database, real sign-in with role-based access checked on a server, document storage, e-signature, real payments, and live links to startup registries and the government e-marketplace. These are the planned next steps.       |
 
 The eligibility limits, rubric weights and payment target are **configurable defaults of the prototype**. They do not replace a department's own financial and procurement rules.
 
